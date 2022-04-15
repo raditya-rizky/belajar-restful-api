@@ -1,5 +1,5 @@
 const express = require("express");
-const data = require("./data");
+const musics = require("./music");
 
 const app = express();
 const port = 3000;
@@ -9,55 +9,57 @@ app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/api/articles", (req, res) => {
-  res.status(200).json(data);
+app.get("/api/musics", (req, res) => {
+  res.status(200).json(musics);
 });
 
-app.get("/api/articles/:id", (req, res) => {
-  const document = data.find((e) => e.id === Number(req.params.id));
+app.get("/api/musics/:id", (req, res) => {
+  const document = musics.find((e) => e.id === Number(req.params.id));
   res.status(200).json(document);
 });
 
-app.post("/api/articles", (req, res) => {
-  const { title, body } = req.body;
+app.post("/api/musics", (req, res) => {
+  const { song, album, band } = req.body;
 
   // Cara dapatkan id dari item terakhir
-  const lastId = data[data.length - 1].id;
+  const lastId = musics[musics.length - 1].id;
   const newId = lastId + 1;
 
-  const article = {
+  const music = {
     id: newId,
-    title: title,
-    body: body,
+    song,
+    album,
+    band,
   };
 
-  data.push(article);
+  musics.push(music);
 
   // Status code untuk post adalah 201 jika berhasil
-  res.status(201).json(article);
+  res.status(201).json(music);
 });
 
-app.put("/api/articles/:id", (req, res) => {
-  const { title, body } = req.body;
+app.put("/api/musics/:id", (req, res) => {
+  const { song, title, band } = req.body;
 
-  const indexData = data.findIndex((e) => e.id === Number(req.params.id));
+  const indexMusics = musics.findIndex((e) => e.id === Number(req.params.id));
 
-  data[indexData] = {
+  musics[indexMusics] = {
     id: Number(req.params.id),
+    song,
     title,
-    body,
+    band,
   };
 
-  res.status(200).json(data[indexData]);
+  res.status(200).json(musics[indexMusics]);
 });
 
-app.delete("/api/articles/:id", (req, res) => {
-  const indexData = data.findIndex((e) => e.id === Number(req.params.id));
+app.delete("/api/musics/:id", (req, res) => {
+  const indexMusics = musics.findIndex((e) => e.id === Number(req.params.id));
 
-  data.splice(indexData, 1);
+  musics.splice(indexMusics, 1);
 
   res.status(200).json({
-    message: `Data with Id ${req.params.id} has been deleted`,
+    message: `Song with Id ${req.params.id} has been deleted`,
   });
 });
 
